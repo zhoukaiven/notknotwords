@@ -73,12 +73,12 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
   const regionAnchorLabelMap = useMemo(() => {
     const map: Record<string, string> = {};
     regions.forEach((region) => {
-      const cells = [...region.cells];
+      const cells = Array.from(region.cells);
       if (cells.length === 0) return;
       const [anchor] = cells.sort(([ar, ac], [br, bc]) =>
         ar === br ? ac - bc : ar - br,
       );
-      map[`${anchor[0]},${anchor[1]}`] = [...region.letters].sort().join('');
+      map[`${anchor[0]},${anchor[1]}`] = Array.from(region.letters).sort().join('');
     });
     return map;
   }, [regions]);
