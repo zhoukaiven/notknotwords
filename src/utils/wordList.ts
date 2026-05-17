@@ -203,7 +203,7 @@ const WORD_SET = new Set<string>([
   'lodge','logic','lorry','lover','lower','loyal','lucid','lucky','lunar','lurid','lured',
   'lusty','lyric',
   'magic','major','maker','mango','manor','maple','match','mayor','mealy','media','medic',
-  'melee','mercy','merit','messy','metal','minor','mirth','miser','model','money','month',
+  'melee','mercy','merit','messy','metal','meets','minor','mirth','miser','model','money','month',
   'moral','motel','mount','mourn','mouth','movie','muddy','murky','music','musty','myrrh',
   'nasal','navel','needs','nerve','never','night','ninja','noble','noisy','noose','north',
   'notch','novel','nymph',
