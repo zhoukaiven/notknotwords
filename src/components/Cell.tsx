@@ -31,6 +31,8 @@ interface CellProps {
   isBlocked: boolean;
   isSelected: boolean;
   cellStatus: CellStatus;
+  groupLabel?: string;
+  groupStatus?: boolean | null;
   regionMap: Record<string, number | string>;
   size: number;
   onSelect: (row: number, col: number) => void;
@@ -46,6 +48,8 @@ export default function Cell({
   isBlocked,
   isSelected,
   cellStatus,
+  groupLabel,
+  groupStatus,
   regionMap,
   size,
   onSelect,
@@ -72,12 +76,19 @@ export default function Cell({
   if (cellStatus === 'valid')   statusClass = 'cell--valid';
   if (cellStatus === 'invalid') statusClass = 'cell--invalid';
 
+  let groupStatusClass = '';
+  if (groupStatus === true) groupStatusClass = 'cell__group-badge--correct';
+  if (groupStatus === false) groupStatusClass = 'cell__group-badge--wrong';
+
   return (
     <div
       className={`cell ${statusClass} ${isSelected ? 'cell--selected' : ''}`}
       style={borderStyle}
       onClick={() => onSelect(row, col)}
     >
+      {groupLabel && (
+        <span className={`cell__group-badge ${groupStatusClass}`}>{groupLabel}</span>
+      )}
       <input
         ref={setRef}
         className="cell__input"

@@ -63,6 +63,24 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
     () => regions.map((region) => regionLettersCorrect(region, grid)),
     [regions, grid],
   );
+  const regionStatusById = useMemo(
+    () =>
+      Object.fromEntries(
+        regions.map((region, i) => [region.id, regionStatuses[i] ?? null]),
+      ) as Record<number, boolean | null>,
+    [regions, regionStatuses],
+  );
+  const regionAnchorLabelMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    regions.forEach((region) => {
+      const [anchor] = [...region.cells].sort(([ar, ac], [br, bc]) =>
+        ar === br ? ac - bc : ar - br,
+      );
+      if (!anchor) return;
+      map[`${anchor[0]},${anchor[1]}`] = [...region.letters].sort().join('');
+    });
+    return map;
+  }, [regions]);
 
   const focusCell = useCallback(
     (r: number, c: number) => {
@@ -165,6 +183,12 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
                 isBlocked={blocked[r][c]}
                 isSelected={selected !== null && selected[0] === r && selected[1] === c}
                 cellStatus={cellStatusMap[key] ?? 'empty'}
+                groupLabel={regionAnchorLabelMap[key]}
+                groupStatus={
+                  typeof regionMap[key] === 'number'
+                    ? regionStatusById[regionMap[key]]
+                    : null
+                }
                 regionMap={regionMap}
                 size={size}
                 onSelect={handleSelect}
@@ -175,29 +199,6 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
           }),
         )}
       </div>
-
-      {/* Letter-group hints */}
-      <div className="region-hints">
-        <h3>Letter Groups</h3>
-        <div className="region-list">
-          {regions.map((region, i) => {
-            const status = regionStatuses[i];
-            const cls =
-              status === true  ? 'region-hint--correct' :
-              status === false ? 'region-hint--wrong'   : '';
-            return (
-              <div key={region.id} className={`region-hint ${cls}`}>
-                <span className="region-hint__badge">
-                  {[...region.letters].sort().join(' ')}
-                </span>
-                {status === true  && <span className="region-hint__check">✓</span>}
-                {status === false && <span className="region-hint__x">✗</span>}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       <div className="board-controls">
         <button className="btn btn--reset" onClick={handleReset}>
           Reset
