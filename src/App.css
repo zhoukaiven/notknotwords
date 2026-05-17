@@ -1,0 +1,250 @@
+/* =========================================================
+   NotKnotwords — App styles
+   ========================================================= */
+
+/* ---------- Layout ---------- */
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100svh;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  background: #f8f7f5;
+  color: #1a1a2e;
+  padding-bottom: 2rem;
+}
+
+/* ---------- Header ---------- */
+.app-header {
+  width: 100%;
+  max-width: 640px;
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+}
+
+.app-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 0 0 0.5rem;
+  color: #1a1a2e;
+}
+
+.title-not {
+  color: #6c63ff;
+}
+
+.app-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ---------- Puzzle nav ---------- */
+.puzzle-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.puzzle-nav__btn {
+  padding: 0.45rem 1.1rem;
+  border: 2px solid #d0cfe8;
+  border-radius: 2rem;
+  background: #fff;
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.puzzle-nav__btn:hover {
+  border-color: #6c63ff;
+  color: #6c63ff;
+}
+
+.puzzle-nav__btn--active {
+  background: #6c63ff;
+  border-color: #6c63ff;
+  color: #fff;
+}
+
+/* ---------- Main content ---------- */
+.app-main {
+  width: 100%;
+  max-width: 640px;
+  padding: 0 1rem;
+}
+
+.puzzle-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin: 0.25rem 0 1rem;
+}
+
+.status-message {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1rem;
+}
+
+.status-message--error {
+  color: #c0392b;
+}
+
+/* ---------- Game board ---------- */
+.game-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  display: grid;
+  gap: 0;
+  border: 3px solid #1a1a2e;
+  border-radius: 4px;
+  overflow: hidden;
+  width: min(min-content, 100%);
+}
+
+/* ---------- Cells ---------- */
+.cell {
+  width: clamp(44px, 11vw, 68px);
+  height: clamp(44px, 11vw, 68px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-style: solid;
+  box-sizing: border-box;
+  transition: background 0.15s;
+}
+
+.cell--blocked {
+  background: #1a1a2e;
+  border-color: #1a1a2e;
+}
+
+.cell--selected {
+  background: #e8e5ff !important;
+}
+
+.cell--valid {
+  background: #d4edda;
+}
+
+.cell--invalid {
+  background: #f8d7da;
+}
+
+.cell__input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  text-align: center;
+  font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+  font-weight: 700;
+  font-family: inherit;
+  color: #1a1a2e;
+  text-transform: uppercase;
+  cursor: pointer;
+  caret-color: transparent;
+  user-select: none;
+}
+
+.cell__group-badge {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 0.12rem 0.18rem;
+  border-radius: 4px;
+  background: #eceafc;
+  color: #3f3a7a;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cell__group-badge--correct {
+  background: #d4edda;
+  color: #176b2d;
+}
+
+.cell__group-badge--wrong {
+  background: #f8d7da;
+  color: #8f1f2b;
+}
+
+/* ---------- Success banner ---------- */
+.success-banner {
+  background: #28a745;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  text-align: center;
+  animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.05); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+/* ---------- Controls ---------- */
+.board-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.5rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn:hover { opacity: 0.85; }
+
+.btn--reset {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+/* ---------- Footer ---------- */
+.app-footer {
+  margin-top: 2.5rem;
+  font-size: 0.8rem;
+  color: #888;
+  text-align: center;
+}
+
+.app-footer a {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.app-footer a:hover { text-decoration: underline; }
