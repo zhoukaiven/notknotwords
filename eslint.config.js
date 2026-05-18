@@ -29,7 +29,7 @@ export default defineConfig([
       },
     },
     rules: {
-      ...tseslint.configs.recommended.rules,
+      ...tseslint.configs.recommended.rules
     },
   },
 
