@@ -39,6 +39,7 @@ interface CellProps {
   height: number;
   onSelect: (row: number, col: number) => void;
   onKeyDown: (e: KeyboardEvent<HTMLInputElement>, row: number, col: number) => void;
+  onChange: (value: string, row: number, col: number) => void;
   /** Callback ref — called with the DOM element when mounted/unmounted. */
   setRef: (el: HTMLInputElement | null) => void;
 }
@@ -57,6 +58,7 @@ export default function Cell({
   height,
   onSelect,
   onKeyDown,
+  onChange,
   setRef,
 }: CellProps) {
   const thick = useMemo(
@@ -97,8 +99,14 @@ export default function Cell({
         className="cell__input"
         type="text"
         maxLength={1}
+        pattern="[A-Za-z]"
+        inputMode="text"
+        autoCapitalize="characters"
+        autoCorrect="off"
+        spellCheck="false"
         value={letter}
         onKeyDown={(e) => onKeyDown(e, row, col)}
+        onChange={(e) => onChange(e.target.value.toUpperCase(), row, col)}
         onFocus={() => onSelect(row, col)}
         aria-label={`Row ${row + 1}, Column ${col + 1}`}
       />
