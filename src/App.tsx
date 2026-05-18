@@ -75,18 +75,6 @@ export default function App() {
         </p>
       </header>
 
-      <nav className="puzzle-nav">
-        {PUZZLES.map((p, i) => (
-          <button
-            key={p.id}
-            className={`puzzle-nav__btn${i === puzzleIndex ? ' puzzle-nav__btn--active' : ''}`}
-            onClick={() => dispatchPuzzleIndex(i)}
-          >
-            {p.label}
-          </button>
-        ))}
-      </nav>
-
       <main className="app-main">
         {loadState.status === 'loading' && (
           <div className="status-message">Loading puzzle…</div>
@@ -103,6 +91,43 @@ export default function App() {
           </>
         )}
       </main>
+
+      <nav className="puzzle-nav">
+        <button
+          className="puzzle-nav__btn"
+          onClick={() => {
+            const prevIndex = puzzleIndex - 1;
+            if (prevIndex >= 0) dispatchPuzzleIndex(prevIndex);
+          }}
+          disabled={puzzleIndex === 0}
+        >
+          ← Prev
+        </button>
+
+        <select
+          value={puzzleIndex}
+          onChange={(e) => dispatchPuzzleIndex(Number(e.target.value))}
+          className="puzzle-select"
+          aria-label="Select puzzle"
+        >
+          {PUZZLES.map((p, i) => (
+            <option key={p.id} value={i}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="puzzle-nav__btn"
+          onClick={() => {
+            const nextIndex = puzzleIndex + 1;
+            if (nextIndex < PUZZLES.length) dispatchPuzzleIndex(nextIndex);
+          }}
+          disabled={puzzleIndex >= PUZZLES.length - 1}
+        >
+          Next →
+        </button>
+      </nav>
 
       <footer className="app-footer">
         <p>
