@@ -98,7 +98,6 @@ export default function Cell({
         type="text"
         maxLength={1}
         value={letter}
-        readOnly
         onKeyDown={(e) => onKeyDown(e, row, col)}
         onFocus={() => onSelect(row, col)}
         aria-label={`Row ${row + 1}, Column ${col + 1}`}
