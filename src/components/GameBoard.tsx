@@ -165,25 +165,45 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
 
   const handleChange = useCallback((value: string, r: number, c: number) => {
     // Handle input from virtual keyboard (mobile devices)
+    // This function needs to handle various mobile keyboard behaviors:
+    // 1. Single character input (normal case)
+    // 2. Multiple characters from autocomplete/autocorrect
+    // 3. Empty string (backspace/delete)
+    // 4. Overwriting existing cell content
+    
+    // Extract valid characters from the input value
+    let newValue = '';
+    
     if (value.length === 0) {
-      // Backspace/delete case
-      setGrid((prev) => {
-        const next = prev.map((row) => [...row]);
-        next[r][c] = '';
-        return next;
-      });
-    } else if (value.length === 1 && /^[A-Z]$/.test(value)) {
-      // Single letter input
-      setGrid((prev) => {
-        const next = prev.map((row) => [...row]);
-        next[r][c] = value;
-        return next;
-      });
-      // Move to next cell automatically
-      const nc = nextCell(r, c, 1);
-      if (nc) focusCell(nc[0], nc[1]);
+      // Backspace/delete case - clear the cell
+      newValue = '';
+    } else {
+      // Find the last valid character in the input
+      // Mobile keyboards might send multiple characters (autocomplete, autocorrect)
+      for (let i = value.length - 1; i >= 0; i--) {
+        const char = value[i];
+        if (/^[A-Z]$/.test(char)) {
+          newValue = char;
+          break;
+        }
+      }
     }
-    // If value.length > 1, it will be truncated by maxLength=1
+    
+    // Only update if we have a valid change
+    if (newValue !== '' || value.length === 0) {
+      setGrid((prev) => {
+        const next = prev.map((row) => [...row]);
+        // Always overwrite the cell content - this ensures mobile overwrite works
+        next[r][c] = newValue;
+        return next;
+      });
+      
+      // Move to next cell if we added a valid character
+      if (newValue !== '') {
+        const nc = nextCell(r, c, 1);
+        if (nc) focusCell(nc[0], nc[1]);
+      }
+    }
   }, [nextCell, focusCell]);
 
   const handleReset = () => {

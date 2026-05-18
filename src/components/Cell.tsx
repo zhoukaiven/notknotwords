@@ -103,11 +103,21 @@ export default function Cell({
         inputMode="text"
         autoCapitalize="characters"
         autoCorrect="off"
+        autoComplete="off"
         spellCheck="false"
         value={letter}
         onKeyDown={(e) => onKeyDown(e, row, col)}
         onChange={(e) => onChange(e.target.value.toUpperCase(), row, col)}
-        onFocus={() => onSelect(row, col)}
+        onFocus={(e) => {
+          onSelect(row, col);
+          // Ensure the input is ready for new input on mobile
+          e.target.select();
+        }}
+        onClick={(e) => {
+          // Ensure proper focus and selection on mobile
+          e.currentTarget.focus();
+          e.currentTarget.select();
+        }}
         aria-label={`Row ${row + 1}, Column ${col + 1}`}
       />
     </div>
