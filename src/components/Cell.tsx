@@ -98,7 +98,6 @@ export default function Cell({
         ref={setRef}
         className="cell__input"
         type="text"
-        maxLength={1}
         pattern="[A-Za-z]"
         inputMode="text"
         autoCapitalize="characters"
@@ -108,16 +107,6 @@ export default function Cell({
         value={letter}
         onKeyDown={(e) => onKeyDown(e, row, col)}
         onChange={(e) => onChange(e.target.value.toUpperCase(), row, col)}
-        onFocus={(e) => {
-          onSelect(row, col);
-          // Ensure the input is ready for new input on mobile
-          e.target.select();
-        }}
-        onClick={(e) => {
-          // Ensure proper focus and selection on mobile
-          e.currentTarget.focus();
-          e.currentTarget.select();
-        }}
         aria-label={`Row ${row + 1}, Column ${col + 1}`}
       />
     </div>

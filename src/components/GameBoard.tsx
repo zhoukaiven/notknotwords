@@ -178,13 +178,29 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
       // Backspace/delete case - clear the cell
       newValue = '';
     } else {
-      // Find the last valid character in the input
-      // Mobile keyboards might send multiple characters (autocomplete, autocorrect)
-      for (let i = value.length - 1; i >= 0; i--) {
-        const char = value[i];
-        if (/^[A-Z]$/.test(char)) {
-          newValue = char;
-          break;
+      const currentValue = grid[r][c];
+      
+      // If the value changed, find what was newly added
+      if (value !== currentValue) {
+        // Look for the first character in value that's not in currentValue
+        // This handles the case where mobile keyboard combines existing text with new input
+        for (let i = 0; i < value.length; i++) {
+          const char = value[i];
+          if (/^[A-Z]$/.test(char) && !currentValue.includes(char)) {
+            newValue = char;
+            break;
+          }
+        }
+        
+        // If no new character found (shouldn't happen), fall back to first valid char
+        if (newValue === '' && value.length > 0) {
+          for (let i = 0; i < value.length; i++) {
+            const char = value[i];
+            if (/^[A-Z]$/.test(char)) {
+              newValue = char;
+              break;
+            }
+          }
         }
       }
     }
@@ -204,7 +220,7 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
         if (nc) focusCell(nc[0], nc[1]);
       }
     }
-  }, [nextCell, focusCell]);
+  }, [nextCell, focusCell, grid]);
 
   const handleReset = () => {
     setGrid(Array.from({ length: height }, () => Array<string>(width).fill('')));
