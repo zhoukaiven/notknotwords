@@ -163,6 +163,29 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
     [nextCell, focusCell],
   );
 
+  const handleChange = useCallback((value: string, r: number, c: number) => {
+    // Handle input from virtual keyboard (mobile devices)
+    if (value.length === 0) {
+      // Backspace/delete case
+      setGrid((prev) => {
+        const next = prev.map((row) => [...row]);
+        next[r][c] = '';
+        return next;
+      });
+    } else if (value.length === 1 && /^[A-Z]$/.test(value)) {
+      // Single letter input
+      setGrid((prev) => {
+        const next = prev.map((row) => [...row]);
+        next[r][c] = value;
+        return next;
+      });
+      // Move to next cell automatically
+      const nc = nextCell(r, c, 1);
+      if (nc) focusCell(nc[0], nc[1]);
+    }
+    // If value.length > 1, it will be truncated by maxLength=1
+  }, [nextCell, focusCell]);
+
   const handleReset = () => {
     setGrid(Array.from({ length: height }, () => Array<string>(width).fill('')));
     setSelected(null);
@@ -204,6 +227,7 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
                 height={height}
                 onSelect={handleSelect}
                 onKeyDown={handleKeyDown}
+                onChange={handleChange}
                 setRef={makeSetRef(r, c)}
               />
             );
