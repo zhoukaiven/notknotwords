@@ -165,26 +165,62 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
 
   const handleChange = useCallback((value: string, r: number, c: number) => {
     // Handle input from virtual keyboard (mobile devices)
+    // This function needs to handle various mobile keyboard behaviors:
+    // 1. Single character input (normal case)
+    // 2. Multiple characters from autocomplete/autocorrect
+    // 3. Empty string (backspace/delete)
+    // 4. Overwriting existing cell content
+    
+    // Extract valid characters from the input value
+    let newValue = '';
+    
     if (value.length === 0) {
-      // Backspace/delete case
-      setGrid((prev) => {
-        const next = prev.map((row) => [...row]);
-        next[r][c] = '';
-        return next;
-      });
-    } else if (value.length === 1 && /^[A-Z]$/.test(value)) {
-      // Single letter input
-      setGrid((prev) => {
-        const next = prev.map((row) => [...row]);
-        next[r][c] = value;
-        return next;
-      });
-      // Move to next cell automatically
-      const nc = nextCell(r, c, 1);
-      if (nc) focusCell(nc[0], nc[1]);
+      // Backspace/delete case - clear the cell
+      newValue = '';
+    } else {
+      const currentValue = grid[r][c];
+      
+      // If the value changed, find what was newly added
+      if (value !== currentValue) {
+        // Look for the first character in value that's not in currentValue
+        // This handles the case where mobile keyboard combines existing text with new input
+        for (let i = 0; i < value.length; i++) {
+          const char = value[i];
+          if (/^[A-Z]$/.test(char) && !currentValue.includes(char)) {
+            newValue = char;
+            break;
+          }
+        }
+        
+        // If no new character found (shouldn't happen), fall back to first valid char
+        if (newValue === '' && value.length > 0) {
+          for (let i = 0; i < value.length; i++) {
+            const char = value[i];
+            if (/^[A-Z]$/.test(char)) {
+              newValue = char;
+              break;
+            }
+          }
+        }
+      }
     }
-    // If value.length > 1, it will be truncated by maxLength=1
-  }, [nextCell, focusCell]);
+    
+    // Only update if we have a valid change
+    if (newValue !== '' || value.length === 0) {
+      setGrid((prev) => {
+        const next = prev.map((row) => [...row]);
+        // Always overwrite the cell content - this ensures mobile overwrite works
+        next[r][c] = newValue;
+        return next;
+      });
+      
+      // Move to next cell if we added a valid character
+      if (newValue !== '') {
+        const nc = nextCell(r, c, 1);
+        if (nc) focusCell(nc[0], nc[1]);
+      }
+    }
+  }, [nextCell, focusCell, grid]);
 
   const handleReset = () => {
     setGrid(Array.from({ length: height }, () => Array<string>(width).fill('')));

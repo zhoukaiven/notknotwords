@@ -98,16 +98,15 @@ export default function Cell({
         ref={setRef}
         className="cell__input"
         type="text"
-        maxLength={1}
         pattern="[A-Za-z]"
         inputMode="text"
         autoCapitalize="characters"
         autoCorrect="off"
+        autoComplete="off"
         spellCheck="false"
         value={letter}
         onKeyDown={(e) => onKeyDown(e, row, col)}
         onChange={(e) => onChange(e.target.value.toUpperCase(), row, col)}
-        onFocus={() => onSelect(row, col)}
         aria-label={`Row ${row + 1}, Column ${col + 1}`}
       />
     </div>
