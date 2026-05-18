@@ -12,14 +12,15 @@ function getThickBorders(
   row: number,
   col: number,
   regionMap: Record<string, number | string>,
-  size: number,
+  width: number,
+  height: number,
 ): ThickBorders {
   const key = (r: number, c: number) => `${r},${c}`;
   const thisRegion = regionMap[key(row, col)];
   return {
     top:    row === 0        || regionMap[key(row - 1, col)] !== thisRegion,
-    right:  col === size - 1 || regionMap[key(row, col + 1)] !== thisRegion,
-    bottom: row === size - 1 || regionMap[key(row + 1, col)] !== thisRegion,
+    right:  col === width - 1 || regionMap[key(row, col + 1)] !== thisRegion,
+    bottom: row === height - 1 || regionMap[key(row + 1, col)] !== thisRegion,
     left:   col === 0        || regionMap[key(row, col - 1)] !== thisRegion,
   };
 }
@@ -34,7 +35,8 @@ interface CellProps {
   groupLabel?: string;
   groupStatus?: boolean | null;
   regionMap: Record<string, number | string>;
-  size: number;
+  width: number;
+  height: number;
   onSelect: (row: number, col: number) => void;
   onKeyDown: (e: KeyboardEvent<HTMLInputElement>, row: number, col: number) => void;
   /** Callback ref — called with the DOM element when mounted/unmounted. */
@@ -51,14 +53,15 @@ export default function Cell({
   groupLabel,
   groupStatus,
   regionMap,
-  size,
+  width,
+  height,
   onSelect,
   onKeyDown,
   setRef,
 }: CellProps) {
   const thick = useMemo(
-    () => getThickBorders(row, col, regionMap, size),
-    [row, col, regionMap, size],
+    () => getThickBorders(row, col, regionMap, width, height),
+    [row, col, regionMap, width, height],
   );
 
   if (isBlocked) {

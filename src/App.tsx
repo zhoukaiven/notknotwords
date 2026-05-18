@@ -13,6 +13,7 @@ const PUZZLES: PuzzleEntry[] = [
   { id: 1, file: 'puzzle1.json', label: 'Puzzle #1' },
   { id: 2, file: 'puzzle2.json', label: 'Puzzle #2' },
   { id: 3, file: 'puzzle3.json', label: 'Puzzle #3' },
+  { id: 4, file: 'puzzle4.json', label: 'Puzzle #4' },
 ];
 
 type LoadState =
