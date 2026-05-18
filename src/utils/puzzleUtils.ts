@@ -1,5 +1,5 @@
 import type { CellStatus, Puzzle, Region, Segment } from '../types.js';
-import { isValidWord } from './wordList.js';
+import { isValidWord } from './wordList';
 
 /**
  * Returns the word segments for all rows and columns in the puzzle grid.
@@ -9,7 +9,8 @@ import { isValidWord } from './wordList.js';
 export function computeSegments(
   grid: string[][],
   blocked: boolean[][],
-  size: number,
+  width: number,
+  height: number,
 ): Segment[] {
   const segments: Segment[] = [];
 
@@ -27,10 +28,10 @@ export function computeSegments(
   };
 
   // rows
-  for (let r = 0; r < size; r++) {
+  for (let r = 0; r < height; r++) {
     let run: [number, number][] = [];
-    for (let c = 0; c <= size; c++) {
-      if (c < size && !blocked[r][c]) {
+    for (let c = 0; c <= width; c++) {
+      if (c < width && !blocked[r][c]) {
         run.push([r, c]);
       } else {
         const seg = makeSegment(run);
@@ -41,10 +42,10 @@ export function computeSegments(
   }
 
   // columns
-  for (let c = 0; c < size; c++) {
+  for (let c = 0; c < width; c++) {
     let run: [number, number][] = [];
-    for (let r = 0; r <= size; r++) {
-      if (r < size && !blocked[r][c]) {
+    for (let r = 0; r <= height; r++) {
+      if (r < height && !blocked[r][c]) {
         run.push([r, c]);
       } else {
         const seg = makeSegment(run);
@@ -64,17 +65,18 @@ export function computeSegments(
  */
 export function buildCellStatusMap(
   segments: Segment[],
-  size: number,
+  width: number,
+  height: number,
 ): Record<string, CellStatus> {
   const priority: Record<CellStatus, number> = {
-    valid: 0,
-    empty: 1,
-    incomplete: 2,
-    invalid: 3,
+    valid: 3,
+    empty: 2,
+    incomplete: 1,
+    invalid: 0,
   };
   const map: Record<string, CellStatus> = {};
-  for (let r = 0; r < size; r++) {
-    for (let c = 0; c < size; c++) {
+  for (let r = 0; r < height; r++) {
+    for (let c = 0; c < width; c++) {
       map[`${r},${c}`] = 'empty';
     }
   }
@@ -104,9 +106,17 @@ export function isPuzzleSolved(segments: Segment[]): boolean {
 export function regionLettersCorrect(
   region: Region,
   grid: string[][],
+  width: number,
+  height: number,
 ): boolean | null {
   const placed = region.cells
-    .map(([r, c]) => grid[r][c])
+    .map(([r, c]) => {
+      // Check bounds to avoid accessing undefined cells
+      if (r >= 0 && r < height && c >= 0 && c < width) {
+        return grid[r][c];
+      }
+      return '';
+    })
     .filter((l) => l !== '')
     .map((l) => l.toUpperCase())
     .sort();
@@ -117,8 +127,8 @@ export function regionLettersCorrect(
 
 /** Build a 2-D boolean array marking blocked cells. */
 export function buildBlockedMap(puzzle: Puzzle): boolean[][] {
-  const b: boolean[][] = Array.from({ length: puzzle.size }, () =>
-    Array(puzzle.size).fill(false),
+  const b: boolean[][] = Array.from({ length: puzzle.height }, () =>
+    Array(puzzle.width).fill(false),
   );
   for (const [r, c] of puzzle.blocked) {
     b[r][c] = true;

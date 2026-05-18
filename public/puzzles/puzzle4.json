@@ -1,0 +1,23 @@
+{
+  "title": "Puzzle #4 — Non-rectangular",
+  "width": 4,
+  "height": 3,
+  "blocked": [[1,1],[1,2],[2,1],[2,2]],
+  "regions": [
+    {
+      "id": 0,
+      "cells": [[0,0],[0,1],[0,2],[0,3]],
+      "letters": ["C","A","T","S"]
+    },
+    {
+      "id": 1,
+      "cells": [[1,0],[2,0]],
+      "letters": ["A", "R"]
+    },
+    {
+      "id": 2,
+      "cells": [[1,3],[2,3]],
+      "letters": ["E", "E"]
+    }
+  ]
+}

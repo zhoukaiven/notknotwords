@@ -1,6 +1,7 @@
 {
   "title": "Puzzle #1 — Word Square",
-  "size": 4,
+  "width": 4,
+  "height": 4,
   "blocked": [],
   "regions": [
     {

@@ -6,7 +6,8 @@ export interface Region {
 
 export interface Puzzle {
   title: string;
-  size: number;
+  width: number;
+  height: number;
   blocked: [number, number][];
   regions: Region[];
 }

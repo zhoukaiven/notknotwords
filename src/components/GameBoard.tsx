@@ -20,7 +20,7 @@ interface GameBoardProps {
 }
 
 export default function GameBoard({ puzzle }: GameBoardProps) {
-  const { size, regions } = puzzle;
+  const { width, height, regions } = puzzle;
 
   const blocked = useMemo(() => buildBlockedMap(puzzle), [puzzle]);
 
@@ -40,7 +40,7 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
 
   // Grid: 2-D array of letters ('' = empty)
   const [grid, setGrid] = useState<string[][]>(() =>
-    Array.from({ length: size }, () => Array<string>(size).fill('')),
+    Array.from({ length: height }, () => Array<string>(width).fill('')),
   );
   const [selected, setSelected] = useState<[number, number] | null>(null);
 
@@ -56,12 +56,12 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
   );
 
   // Derived validation state
-  const segments     = useMemo(() => computeSegments(grid, blocked, size), [grid, blocked, size]);
-  const cellStatusMap = useMemo(() => buildCellStatusMap(segments, size), [segments, size]);
+  const segments     = useMemo(() => computeSegments(grid, blocked, width, height), [grid, blocked, width, height]);
+  const cellStatusMap = useMemo(() => buildCellStatusMap(segments, width, height), [segments, width, height]);
   const solved        = useMemo(() => isPuzzleSolved(segments), [segments]);
   const regionStatuses = useMemo(
-    () => regions.map((region) => regionLettersCorrect(region, grid)),
-    [regions, grid],
+    () => regions.map((region) => regionLettersCorrect(region, grid, width, height)),
+    [regions, grid, width, height],
   );
   const regionStatusById = useMemo(
     () =>
@@ -85,27 +85,27 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
 
   const focusCell = useCallback(
     (r: number, c: number) => {
-      if (r < 0 || r >= size || c < 0 || c >= size) return;
+      if (r < 0 || r >= height || c < 0 || c >= width) return;
       if (blocked[r][c]) return;
       inputRefs.current.get(`${r},${c}`)?.focus();
       setSelected([r, c]);
     },
-    [size, blocked],
+    [width, height, blocked],
   );
 
   /** Find the next (or previous) non-blocked cell in row-major order. */
   const nextCell = useCallback(
     (r: number, c: number, delta: 1 | -1 = 1): [number, number] | null => {
-      let idx = r * size + c + delta;
-      while (idx >= 0 && idx < size * size) {
-        const nr = Math.floor(idx / size);
-        const nc = idx % size;
+      let idx = r * width + c + delta;
+      while (idx >= 0 && idx < width * height) {
+        const nr = Math.floor(idx / width);
+        const nc = idx % width;
         if (!blocked[nr][nc]) return [nr, nc];
         idx += delta;
       }
       return null;
     },
-    [size, blocked],
+    [width, height, blocked],
   );
 
   const handleSelect = useCallback((r: number, c: number) => {
@@ -155,7 +155,7 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
   );
 
   const handleReset = () => {
-    setGrid(Array.from({ length: size }, () => Array<string>(size).fill('')));
+    setGrid(Array.from({ length: height }, () => Array<string>(width).fill('')));
     setSelected(null);
   };
 
@@ -170,10 +170,10 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
       {/* Crossword grid */}
       <div
         className="grid"
-        style={{ gridTemplateColumns: `repeat(${size}, 1fr)` }}
+        style={{ gridTemplateColumns: `repeat(${width}, 1fr)` }}
       >
-        {Array.from({ length: size }, (_, r) =>
-          Array.from({ length: size }, (_, c) => {
+        {Array.from({ length: height }, (_, r) =>
+          Array.from({ length: width }, (_, c) => {
             const key = `${r},${c}`;
             return (
               <Cell
@@ -191,7 +191,8 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
                     : null
                 }
                 regionMap={regionMap}
-                size={size}
+                width={width}
+                height={height}
                 onSelect={handleSelect}
                 onKeyDown={handleKeyDown}
                 setRef={makeSetRef(r, c)}
