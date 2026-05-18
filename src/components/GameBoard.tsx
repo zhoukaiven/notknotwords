@@ -3,6 +3,7 @@ import {
   useRef,
   useCallback,
   useMemo,
+  useEffect,
   type KeyboardEvent,
 } from 'react';
 import Cell from './Cell.js';
@@ -82,6 +83,14 @@ export default function GameBoard({ puzzle }: GameBoardProps) {
     });
     return map;
   }, [regions]);
+
+  // Clear selection when puzzle is solved
+  useEffect(() => {
+    if (solved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSelected(null);
+    }
+  }, [solved]);
 
   const focusCell = useCallback(
     (r: number, c: number) => {
