@@ -210,6 +210,11 @@
     /* Remove user-select: none to allow proper mobile input */
   }
   
+  /* Hide cursor when cell is selected on mobile */
+  .cell--selected .cell__input {
+    caret-color: transparent;
+  }
+  
   .cell {
     /* Slightly larger touch target for fingers */
     min-width: clamp(48px, 12vw, 72px);
