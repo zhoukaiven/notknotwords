@@ -161,8 +161,28 @@
   color: #1a1a2e;
   text-transform: uppercase;
   cursor: pointer;
-  caret-color: transparent;
-  user-select: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* Desktop-only styles - hide caret and disable text selection on desktop */
+  .cell__input {
+    caret-color: transparent;
+    user-select: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile touch devices - ensure better touch targets and input behavior */
+  .cell__input {
+    caret-color: #1a1a2e; /* Make caret visible on mobile */
+    /* Remove user-select: none to allow proper mobile input */
+  }
+  
+  .cell {
+    /* Slightly larger touch target for fingers */
+    min-width: clamp(48px, 12vw, 72px);
+    min-height: clamp(48px, 12vw, 72px);
+  }
 }
 
 .cell__group-badge {
